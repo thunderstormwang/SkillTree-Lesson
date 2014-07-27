@@ -41,14 +41,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="RouteDebugger">
       <HintPath>..\packages\routedebugger.2.1.4.0\lib\net40\RouteDebugger.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -118,15 +125,49 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Backend\BackendAreaRegistration.cs" />
+    <Compile Include="Areas\Backend\Controllers\ArticleController.cs" />
+    <Compile Include="Areas\Backend\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Backend\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Backend\Controllers\SystemUserController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Article.cs">
+      <DependentUpon>Workshop.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Category.cs">
+      <DependentUpon>Workshop.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Photo.cs">
+      <DependentUpon>Workshop.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SystemUser.cs">
+      <DependentUpon>Workshop.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Workshop.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Workshop.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Workshop.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Workshop.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Workshop.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Workshop.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Workshop.mdf" />
+    <Content Include="App_Data\Workshop_log.ldf">
+      <DependentUpon>Workshop.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -144,6 +185,38 @@
     <Content Include="Areas\Backend\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Backend\Views\Home\Index.cshtml" />
     <Content Include="Areas\Backend\Views\Home\Logon.cshtml" />
+    <EntityDeploy Include="Models\Workshop.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Workshop.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Workshop.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Workshop.edmx</DependentUpon>
+      <LastGenOutput>Workshop.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Workshop.edmx.diagram">
+      <DependentUpon>Workshop.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\Workshop.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Workshop.edmx</DependentUpon>
+      <LastGenOutput>Workshop.cs</LastGenOutput>
+    </Content>
+    <Content Include="Areas\Backend\Views\Category\Create.cshtml" />
+    <Content Include="Areas\Backend\Views\Category\Delete.cshtml" />
+    <Content Include="Areas\Backend\Views\Category\Details.cshtml" />
+    <Content Include="Areas\Backend\Views\Category\Edit.cshtml" />
+    <Content Include="Areas\Backend\Views\Category\Index.cshtml" />
+    <Content Include="Areas\Backend\Views\Article\Create.cshtml" />
+    <Content Include="Areas\Backend\Views\Article\Delete.cshtml" />
+    <Content Include="Areas\Backend\Views\Article\Details.cshtml" />
+    <Content Include="Areas\Backend\Views\Article\Edit.cshtml" />
+    <Content Include="Areas\Backend\Views\Article\Index.cshtml" />
+    <Content Include="Areas\Backend\Views\SystemUser\Create.cshtml" />
+    <Content Include="Areas\Backend\Views\SystemUser\Delete.cshtml" />
+    <Content Include="Areas\Backend\Views\SystemUser\Details.cshtml" />
+    <Content Include="Areas\Backend\Views\SystemUser\Edit.cshtml" />
+    <Content Include="Areas\Backend\Views\SystemUser\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -179,9 +252,7 @@
     <Content Include="Views\Article\_Carousel.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Areas\Backend\Models\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -189,6 +260,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
