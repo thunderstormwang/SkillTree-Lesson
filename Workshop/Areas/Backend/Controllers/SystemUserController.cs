@@ -46,11 +46,15 @@ namespace Workshop.Areas.Backend.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Account,Password,Email,CreateUser,CreateDate,UpdateUser,UpdateDate")] SystemUser systemUser)
+        public ActionResult Create(SystemUser systemUser)
         {
             if (ModelState.IsValid)
             {
                 systemUser.ID = Guid.NewGuid();
+
+                systemUser.CreateDate = DateTime.Now;
+                systemUser.UpdateDate = DateTime.Now;
+
                 db.SystemUsers.Add(systemUser);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -79,10 +83,29 @@ namespace Workshop.Areas.Backend.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Account,Password,Email,CreateUser,CreateDate,UpdateUser,UpdateDate")] SystemUser systemUser)
+        public ActionResult Edit(SystemUser systemUser)
         {
+            if (db.SystemUsers.Any(x => x.ID != systemUser.ID && x.Account == systemUser.Account))
+            {
+                ModelState.AddModelError("Account", "登入帳號不可重複");
+                return View(systemUser);
+            }
+
             if (ModelState.IsValid)
             {
+                var user = db.SystemUsers.FirstOrDefault(x => x.ID == systemUser.ID);
+
+                if (user == null)
+                {
+                    return View(systemUser);
+                }
+
+                user.Name = systemUser.Name;
+                user.Account = systemUser.Account;
+                user.Password = systemUser.Password;
+                user.Email = systemUser.Email;
+                user.UpdateDate = DateTime.Now;
+
                 db.Entry(systemUser).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

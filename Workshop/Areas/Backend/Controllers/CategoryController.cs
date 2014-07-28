@@ -46,11 +46,15 @@ namespace Workshop.Areas.Backend.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,CreateUser,CreateDate,UpdateUser,UpdateDate")] Category category)
+        public ActionResult Create([Bind(Include = "Name")] Category category)
         {
             if (ModelState.IsValid)
             {
                 category.ID = Guid.NewGuid();
+
+                category.CreateDate = DateTime.Now;
+                category.UpdateDate = DateTime.Now;
+
                 db.Categories.Add(category);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -81,8 +85,28 @@ namespace Workshop.Areas.Backend.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Name,CreateUser,CreateDate,UpdateUser,UpdateDate")] Category category)
         {
+            var isExists = db.Categories
+                .Any(x => x.ID != category.ID && x.Name == category.Name);
+
+            if (isExists)
+            {
+                ModelState.AddModelError("Name", "Category Name Double");
+                return View(category);
+            }
+
             if (ModelState.IsValid)
             {
+                var target = db.Categories.FirstOrDefault(x => x.ID == category.ID);
+
+                if (target == null)
+                {
+                    ModelState.AddModelError("ID", "Is Not Exists.");
+                    return View(category);
+                }
+
+                target.Name = category.Name;
+                target.UpdateDate = DateTime.Now;
+
                 db.Entry(category).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

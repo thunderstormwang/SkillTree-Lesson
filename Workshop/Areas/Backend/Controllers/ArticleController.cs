@@ -48,11 +48,14 @@ namespace Workshop.Areas.Backend.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,CategoryID,Subject,Summary,ContentText,IsPublish,PublishDate,ViewCount,CreateUser,CreateDate,UpdateUser,UpdateDate")] Article article)
+        public ActionResult Create(Article article)
         {
             if (ModelState.IsValid)
             {
                 article.ID = Guid.NewGuid();
+                article.CreateDate = DateTime.Now;
+                article.UpdateDate = DateTime.Now;
+
                 db.Articles.Add(article);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -83,10 +86,20 @@ namespace Workshop.Areas.Backend.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CategoryID,Subject,Summary,ContentText,IsPublish,PublishDate,ViewCount,CreateUser,CreateDate,UpdateUser,UpdateDate")] Article article)
+        public ActionResult Edit(Article article)
         {
             if (ModelState.IsValid)
             {
+                var instance = db.Articles.FirstOrDefault(x => x.ID == article.ID);
+
+                instance.CategoryID = article.CategoryID;
+                instance.Subject = article.Subject;
+                instance.Summary = article.Summary;
+                instance.ContentText = article.ContentText;
+                instance.PublishDate = article.PublishDate;
+                instance.IsPublish = article.IsPublish;
+                instance.UpdateDate = DateTime.Now;
+
                 db.Entry(article).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
