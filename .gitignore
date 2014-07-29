@@ -165,6 +165,9 @@ UpgradeLog*.htm
 *.mdf
 *.ldf
 
+!Workshop.mdf
+!Workshop_log.ldf
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
